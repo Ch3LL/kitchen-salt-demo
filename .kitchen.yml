@@ -1,0 +1,50 @@
+---
+<% @version = '2018.3.4' %>
+driver:
+  name: docker
+  use_sudo: false
+  hostname: salt
+  privileged: true
+  username: root
+  cap_add:
+    - sys_admin
+  disable_upstart: false
+  use_internal_docker_network: false
+  init_environment: |
+    sh -c 't=$(shuf -i 1-15 -n 1); echo Sleeping $t seconds; sleep $t'
+
+provisioner:
+  name: salt_solo
+  sudo: false
+  salt_install: bootstrap
+  salt_version: latest
+  salt_bootstrap_url: https://raw.githubusercontent.com/saltstack/salt-bootstrap/develop/bootstrap-salt.sh
+  salt_bootstrap_options: -qXU git v<%= @version %>
+  log_level: info
+  is_file_root: true
+  require_chef: false
+  retry_on_exit_code:
+    - 139
+  max_retries: 2
+  salt_copy_filter:
+    - .bundle
+    - .git
+    - .gitignore
+    - .kitchen
+    - .kitchen.yml
+    - Gemfile
+    - Gemfile.lock
+    - README.rst
+    - .travis.yml
+
+platforms:
+  - name: ubuntu-18.04
+    driver_config:
+      run_command: /lib/systemd/systemd
+
+suites:
+  - name: py3-full
+    provisioner:
+      state_top_from_file: true
+      pillars_from_directories:
+        - pillar/
