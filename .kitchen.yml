@@ -46,5 +46,3 @@ suites:
   - name: py3-full
     provisioner:
       state_top_from_file: true
-      pillars_from_directories:
-        - pillar/
