@@ -1,13 +1,14 @@
-language: ruby
+language: python
+python:
+  - 3.7
 services:
   - docker
-rvm:
-  - ruby
 dist: trusty
 env:
   matrix:
     - SUITE=ubuntu-18
 install:
+  - bundle install
   - pip install -r requirements.txt
 script:
   - bundle exec kitchen converge $SUITE
