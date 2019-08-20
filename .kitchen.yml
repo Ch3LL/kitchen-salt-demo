@@ -1,17 +1,17 @@
 ---
-<% @version = '2018.3.4' %>
+<% @version = '2019.2.0' %>
 driver:
   name: docker
   use_sudo: false
-  hostname: salt
+  hostname: salt-apache
   privileged: true
   username: root
   cap_add:
     - sys_admin
   disable_upstart: false
   use_internal_docker_network: false
-  init_environment: |
-    sh -c 't=$(shuf -i 1-15 -n 1); echo Sleeping $t seconds; sleep $t'
+  forward:
+    - 80
 
 provisioner:
   name: salt_solo
@@ -20,12 +20,9 @@ provisioner:
   salt_version: latest
   salt_bootstrap_url: https://raw.githubusercontent.com/saltstack/salt-bootstrap/develop/bootstrap-salt.sh
   salt_bootstrap_options: -qXU git v<%= @version %>
-  log_level: info
+  log_level: debug
   is_file_root: true
   require_chef: false
-  retry_on_exit_code:
-    - 139
-  max_retries: 2
   salt_copy_filter:
     - .bundle
     - .git
@@ -43,8 +40,13 @@ platforms:
       run_command: /lib/systemd/systemd
 
 suites:
-  - name: py3-full
+  - name: salt-apache
     provisioner:
       state_top_from_file: true
       pillars_from_directories:
         - pillar/
+
+verifier:
+  name: shell
+  remote_exec: false
+  command: python3 -m pytest -v tests/
