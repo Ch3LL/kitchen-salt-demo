@@ -10,7 +10,6 @@ driver:
     - sys_admin
   disable_upstart: false
   use_internal_docker_network: false
-  init_environment: pip3 install pytest
   forward:
     - 80
 

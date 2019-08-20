@@ -7,6 +7,8 @@ dist: trusty
 env:
   matrix:
     - SUITE=ubuntu-18
+install:
+  - pip install pytest testinfra requests
 script:
   - bundle exec kitchen converge $SUITE
   - bundle exec kitchen verify $SUITE
