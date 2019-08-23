@@ -5,7 +5,7 @@ install_apache:
 
 start_httpd:
   service.running:
-    - name: apache2
+    - name: {{ webserver }}
     - enable: True
     - require:
       - pkg: {{ webserver }}
