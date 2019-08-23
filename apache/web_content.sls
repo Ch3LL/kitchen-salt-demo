@@ -1,6 +1,7 @@
 manage_index:
   file.managed:
     - name: /var/www/html/index.html
+    - show_changes: False
     - contents: |
         <html>
           <body>
